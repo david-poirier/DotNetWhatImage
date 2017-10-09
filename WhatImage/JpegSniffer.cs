@@ -71,7 +71,7 @@ namespace WhatImage
             var length = imageReader.ReadBytes(2);
             if (length.Length != 2)
                 return null;
-            segment.Length = BytesToShort(length);
+            segment.Length = BytesToUShort(length);
             var nextSegmentPosition = startPosition + segment.Length;
 
             // check for Start of Frame marker, c0 to c2
@@ -83,11 +83,11 @@ namespace WhatImage
                 var height = imageReader.ReadBytes(2);
                 if (height.Length != 2)
                     return null;
-                segment.Height = BytesToShort(height);
+                segment.Height = BytesToUShort(height);
                 var width = imageReader.ReadBytes(2);
                 if (width.Length != 2)
                     return null;
-                segment.Width = BytesToShort(width);
+                segment.Width = BytesToUShort(width);
             }
 
             if (nextSegmentPosition <= imageReader.BaseStream.Length)
@@ -97,21 +97,21 @@ namespace WhatImage
             return segment;
         }
 
-        private short BytesToShort(byte[] data)
+        private ushort BytesToUShort(byte[] data)
         {
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(data);
-            var result = BitConverter.ToInt16(data, 0);
+            var result = BitConverter.ToUInt16(data, 0);
             return result;
         }
 
         private class Segment
         {
             public byte[] Marker;
-            public short Length;
+            public ushort Length;
             public bool IsStartOfFrame;
-            public short Width;
-            public short Height;
+            public ushort Width;
+            public ushort Height;
         }
     }
 }
